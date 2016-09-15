@@ -37,6 +37,7 @@ function init_paymentsense() {
 			$this->gateway_password     = $this->get_option( 'gateway_password' );
 			$this->gateway_presharedkey = $this->get_option( 'gateway_presharedkey' );
 			$this->gateway_hashmethod   = $this->get_option( 'gateway_hashmethod' );
+			$this->gateway_transaction_type   = $this->get_option( 'gateway_transaction_type' );
 
 			$this->email_address_editable = $this->get_option( 'email_address_editable' );
 			$this->phone_number_editable  = $this->get_option( 'phone_number_editable' );
@@ -149,6 +150,18 @@ function init_paymentsense() {
 						'HMACSHA1' => __( 'HMACSHA1', 'woocommerce' ),
 						'HMACMD5'  => __( 'HMACMD5', 'woocommerce' )
 					)
+				),
+
+				'gateway_transaction_type' => array(
+					'title' => __( 'Transaction Type:', 'woocommerce' ),
+					'type' => 'select',
+					'description' => __( 'If you wish to obtain authorisation for the payment only, as you intend to manually collect the payment via the MMS, choose Pre-auth.', 'woocommerce'),
+					'default' => 'SALE',
+					'desc_tip'    => true,
+					'options' => array(
+						'SALE' => __('Sale', 'woocommerce'),
+						'PREAUTH' => __('Pre-Auth', 'woocommerce'),
+					),
 				),
 
 				'hosted_payment_form_additional_field' => array(
@@ -519,7 +532,7 @@ function init_paymentsense() {
 			$Amount                    = number_format( $order->get_total(), 2, '.', '' ) * 100;
 			$CurrencyCode              = $wcCurrencyCode;
 			$OrderID                   = ltrim( $order->get_order_number(), '#' );
-			$TransactionType           = 'SALE';
+			$TransactionType           = $this->gateway_transaction_type;
 			$TransactionDateTime       = date( 'Y-m-d H:i:s P' );
 			$CallbackURL               = $this->notify_url;
 			$OrderDescription          = $this->order_description_prefix . ltrim( $order->get_order_number(), '#' );
@@ -548,7 +561,7 @@ function init_paymentsense() {
 
 
 			$str1 = 'MerchantID=' . $MerchantID;
-			$str1 .= '&Password=' . $this->gateway_password;
+			$str1 .= '&Password=' . $Password;
 			$str1 .= '&Amount=' . $Amount;
 			$str1 .= '&CurrencyCode=' . $CurrencyCode;
 			$str1 .= '&OrderID=' . $OrderID;
