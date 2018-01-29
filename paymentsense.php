@@ -792,7 +792,7 @@ function init_paymentsense() {
 				$order->update_status( 'failed', sprintf( __( 'Payment Failed due to: %s .<br />', 'woocommerce' ), strtolower( $_POST['Message'] ) ) );
 				wc_add_notice( __( 'Payment Failed due to: ', 'woothemes' ) . $_POST['Message'] . '<br /> Please check your card details and try again.', 'error' );
 
-				return ( wp_redirect( wc_get_endpoint_url( 'order-received', $order->id, $order->get_checkout_payment_url( false ) ), 200 ) );
+				return ( wp_redirect( wc_get_endpoint_url( 'order-received', $order->id, $order->get_checkout_payment_url( false ) )) );
 			}
 		}
 	}
